@@ -130,8 +130,8 @@ def run_vmaf(idx: int, output_file: str) -> Tuple[Dict[str, float], Dict[str, fl
     vmaf_neg_file = os.path.join(output_dir, f"{base_name}_vmaf_neg.json")
 
     cmds = [
-        f'ffmpeg -hide_banner -loglevel error -i {source_video} -i {output_file} -lavfi "libvmaf=log_fmt=json:log_path={vmaf_file}" -f null -',
-        f'ffmpeg -hide_banner -loglevel error -i {source_video} -i {output_file} -lavfi "libvmaf=model=version=vmaf_v0.6.1neg:log_fmt=json:log_path={vmaf_neg_file}" -f null -'
+        f'ffmpeg -hide_banner -loglevel error -i {source_video} -i {output_file} -lavfi "libvmaf=log_fmt=json:log_path={vmaf_file}" -f null -',  # :n_threads=2
+        f'ffmpeg -hide_banner -loglevel error -i {source_video} -i {output_file} -lavfi "libvmaf=model=version=vmaf_v0.6.1neg:log_fmt=json:log_path={vmaf_neg_file}" -f null -'  # :n_threads=2
     ]
 
     for cmd in cmds:
