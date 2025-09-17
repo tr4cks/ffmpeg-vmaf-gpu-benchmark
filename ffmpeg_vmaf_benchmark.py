@@ -35,6 +35,7 @@ output_csv = args.output_csv
 max_transcode_workers = args.max_transcode_workers
 max_vmaf_workers = args.max_vmaf_workers
 sequential = args.sequential
+vmaf_threads = args.vmaf_threads
 
 # -----------------------------
 # Prepare environment
