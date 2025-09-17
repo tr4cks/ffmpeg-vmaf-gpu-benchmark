@@ -33,7 +33,7 @@ RUN TMPDIR=$(mktemp -d) && cd $TMPDIR && \
     cd / && rm -rf $TMPDIR
 
 # Compile and install FFmpeg
-RUN TMPDIR=$(mktemp -d) && cd $TMPDIR \
+RUN TMPDIR=$(mktemp -d) && cd $TMPDIR && \
     git clone https://git.ffmpeg.org/ffmpeg.git --branch n8.0 && \
     cd ffmpeg && \
     ./configure \
