@@ -68,7 +68,7 @@ def human_time_hms_ms_us(seconds: float) -> str:
     m = int((seconds % 3600) // 60)
     s = int(seconds % 60)
     ms = int((seconds - int(seconds)) * 1000)
-    us = int((seconds*1_000_000) % 1000)  # microseconds restantes
+    us = int((seconds*1_000_000) % 1000)  # remaining microseconds
     return f"{h:02d}:{m:02d}:{s:02d}:{ms:03d}:{us:03d}"
 
 # -----------------------------
@@ -80,17 +80,24 @@ def transcode_function(idx: int, row: RowData) -> Tuple[int, RowData]:
     flags = row['flags']
     base_ext = os.path.splitext(source_video)[1]
     output_file = os.path.join(output_dir, f"{idx}{base_ext}")
-    ffmpeg_cmd = f"ffmpeg -hwaccel cuda -i {source_video} -map 0:v {flags} {output_file}"
+
+    print(f"[TRANSCODE START] Index {idx}, Quality {quality}, Flags: {flags}")
+
+    ffmpeg_cmd = f"ffmpeg -hide_banner -loglevel error -hwaccel cuda -i {source_video} -map 0:v {flags} {output_file}"
 
     start_wall = time.time()
     start_cpu = time.process_time()
-    subprocess.run(ffmpeg_cmd, shell=True, check=True)
+    subprocess.run(ffmpeg_cmd, shell=True, check=True,
+                   stdout=subprocess.DEVNULL,
+                   stderr=subprocess.DEVNULL)
     walltime = time.time() - start_wall
     usertime = time.process_time() - start_cpu
 
     size = os.path.getsize(output_file)
     source_size = os.path.getsize(source_video)
     ratio_size = size / source_size if source_size > 0 else None
+
+    print(f"[TRANSCODE END] Index {idx}, Output: {output_file}, Walltime: {walltime:.2f}s")
 
     return idx, {
         "quality": quality,
@@ -112,26 +119,33 @@ def transcode_function(idx: int, row: RowData) -> Tuple[int, RowData]:
 
 def run_vmaf(idx: int, output_file: str) -> Tuple[Dict[str, float], Dict[str, float]]:
     """Compute VMAF and VMAF_neg scores using FFmpeg."""
+    print(f"[VMAF START] Index {idx}, File: {output_file}")
+
     base_name = os.path.splitext(os.path.basename(output_file))[0]
     vmaf_file = os.path.join(output_dir, f"{base_name}_vmaf.json")
     vmaf_neg_file = os.path.join(output_dir, f"{base_name}_vmaf_neg.json")
 
     cmds = [
-        f'ffmpeg -i {source_video} -i {output_file} -lavfi "libvmaf=log_fmt=json:log_path={vmaf_file}" -f null -',
-        f'ffmpeg -i {source_video} -i {output_file} -lavfi "libvmaf=model=version=vmaf_v0.6.1neg:log_fmt=json:log_path={vmaf_neg_file}" -f null -'
+        f'ffmpeg -hide_banner -loglevel error -i {source_video} -i {output_file} -lavfi "libvmaf=log_fmt=json:log_path={vmaf_file}" -f null -',
+        f'ffmpeg -hide_banner -loglevel error -i {source_video} -i {output_file} -lavfi "libvmaf=model=version=vmaf_v0.6.1neg:log_fmt=json:log_path={vmaf_neg_file}" -f null -'
     ]
+
     for cmd in cmds:
-        subprocess.run(cmd, shell=True, check=True)
+        subprocess.run(cmd, shell=True, check=True,
+                       stdout=subprocess.DEVNULL,
+                       stderr=subprocess.DEVNULL)
 
     with open(vmaf_file) as f:
         vmaf_data = json.load(f).get("pooled_metrics", {}).get("vmaf", {})
     with open(vmaf_neg_file) as f:
         vmaf_neg_data = json.load(f).get("pooled_metrics", {}).get("vmaf", {})
 
+    print(f"[VMAF END] Index {idx}")
+
     return vmaf_data, vmaf_neg_data
 
 def write_csv_partial(idx: int, row_data: RowData):
-    """Write a partial row to CSV safely, ignoring 'output_file' key and formatting values."""
+    """Write a partial row to CSV safely."""
     row_to_write = {k: v for k, v in row_data.items() if k in fieldnames}
     row_to_write["index"] = idx
 
