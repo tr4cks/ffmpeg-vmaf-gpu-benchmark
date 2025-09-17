@@ -54,6 +54,10 @@ with open(output_csv, 'w', newline='') as f:
 # -----------------------------
 # Helper functions
 # -----------------------------
+def log(msg: str):
+    now = time.strftime("%Y-%m-%d %H:%M:%S")
+    print(f"[{now}] {msg}")
+
 def human_size_kb(num_bytes: int) -> str:
     """Convert bytes to kilobytes with 2 decimals."""
     return f"{num_bytes / 1024:.2f} KB"
@@ -83,7 +87,7 @@ def transcode_function(idx: int, row: RowData) -> Tuple[int, RowData]:
     base_ext = os.path.splitext(source_video)[1]
     output_file = os.path.join(output_dir, f"{idx}{base_ext}")
 
-    print(f"[TRANSCODE START] Index {idx}, Quality {quality}, Flags: {flags}")
+    log(f"[TRANSCODE START] Index {idx}, Quality {quality}, Flags: {flags}")
 
     ffmpeg_cmd = f"ffmpeg -hide_banner -loglevel error -hwaccel cuda -i {source_video} -map 0:v {flags} {output_file}"
 
@@ -97,7 +101,7 @@ def transcode_function(idx: int, row: RowData) -> Tuple[int, RowData]:
     source_size = os.path.getsize(source_video)
     ratio_size = size / source_size if source_size > 0 else None
 
-    print(f"[TRANSCODE END] Index {idx}, Output: {output_file}, Walltime: {walltime:.2f}s")
+    log(f"[TRANSCODE END] Index {idx}, Output: {output_file}, Walltime: {walltime:.2f}s")
 
     return idx, {
         "quality": quality,
@@ -119,7 +123,7 @@ def transcode_function(idx: int, row: RowData) -> Tuple[int, RowData]:
 
 def run_vmaf(idx: int, output_file: str) -> Tuple[Dict[str, float], Dict[str, float]]:
     """Compute VMAF and VMAF_neg scores using FFmpeg."""
-    print(f"[VMAF START] Index {idx}, File: {output_file}")
+    log(f"[VMAF START] Index {idx}, File: {output_file}")
 
     base_name = os.path.splitext(os.path.basename(output_file))[0]
     vmaf_file = os.path.join(output_dir, f"{base_name}_vmaf.json")
@@ -138,7 +142,7 @@ def run_vmaf(idx: int, output_file: str) -> Tuple[Dict[str, float], Dict[str, fl
     with open(vmaf_neg_file) as f:
         vmaf_neg_data = json.load(f).get("pooled_metrics", {}).get("vmaf", {})
 
-    print(f"[VMAF END] Index {idx}")
+    log(f"[VMAF END] Index {idx}")
 
     return vmaf_data, vmaf_neg_data
 
