@@ -24,6 +24,7 @@ parser.add_argument("--output_csv", default="output_results.csv", help="CSV file
 parser.add_argument("--max_transcode_workers", type=int, default=1, help="Maximum number of concurrent transcodings (default: 1).")
 parser.add_argument("--max_vmaf_workers", type=int, default=2, help="Maximum number of concurrent VMAF calculations (default: 2).")
 parser.add_argument("--sequential", action="store_true", help="Execute transcoding and VMAF sequentially instead of in parallel.")
+parser.add_argument("--vmaf_threads", type=int, default=1, help="Number of CPU threads to use for VMAF calculation (default: 1).")
 
 args = parser.parse_args()
 
@@ -130,8 +131,8 @@ def run_vmaf(idx: int, output_file: str) -> Tuple[Dict[str, float], Dict[str, fl
     vmaf_neg_file = os.path.join(output_dir, f"{base_name}_vmaf_neg.json")
 
     cmds = [
-        f'ffmpeg -hide_banner -loglevel error -i {source_video} -i {output_file} -lavfi "libvmaf=log_fmt=json:log_path={vmaf_file}" -f null -',  # :n_threads=2
-        f'ffmpeg -hide_banner -loglevel error -i {source_video} -i {output_file} -lavfi "libvmaf=model=version=vmaf_v0.6.1neg:log_fmt=json:log_path={vmaf_neg_file}" -f null -'  # :n_threads=2
+        f'ffmpeg -hide_banner -loglevel error -i {source_video} -i {output_file} -lavfi "libvmaf=log_fmt=json:log_path={vmaf_file}:n_threads={vmaf_threads}" -f null -',
+        f'ffmpeg -hide_banner -loglevel error -i {source_video} -i {output_file} -lavfi "libvmaf=model=version=vmaf_v0.6.1neg:log_fmt=json:log_path={vmaf_neg_file}:n_threads={vmaf_threads}" -f null -'
     ]
 
     for cmd in cmds:

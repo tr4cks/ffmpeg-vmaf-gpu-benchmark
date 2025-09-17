@@ -134,7 +134,8 @@ Key columns:
 | `--output_csv`            | CSV results file               | `output_results.csv` |
 | `--max_transcode_workers` | Max parallel transcodes        | `1`                  |
 | `--max_vmaf_workers`      | Max parallel VMAF calculations | `2`                  |
-| `--sequential`            | sequential execution           | `false`              |
+| `--sequential`            | Sequential execution           | `false`              |
+| `--vmaf_threads`          | Number of CPU threads for VMAF | `1`                  |
 
 ---
 
