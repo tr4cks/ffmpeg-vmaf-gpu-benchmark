@@ -23,6 +23,7 @@ parser.add_argument("--output_dir", default="out", help="Directory to save outpu
 parser.add_argument("--output_csv", default="output_results.csv", help="CSV file to write results (default: output_results.csv).")
 parser.add_argument("--max_transcode_workers", type=int, default=1, help="Maximum number of concurrent transcodings (default: 1).")
 parser.add_argument("--max_vmaf_workers", type=int, default=2, help="Maximum number of concurrent VMAF calculations (default: 2).")
+parser.add_argument("--sequential", action="store_true", help="Execute transcoding and VMAF sequentially instead of in parallel.")
 
 args = parser.parse_args()
 
@@ -32,6 +33,7 @@ output_dir = args.output_dir
 output_csv = args.output_csv
 max_transcode_workers = args.max_transcode_workers
 max_vmaf_workers = args.max_vmaf_workers
+sequential = args.sequential
 
 # -----------------------------
 # Prepare environment
@@ -87,9 +89,7 @@ def transcode_function(idx: int, row: RowData) -> Tuple[int, RowData]:
 
     start_wall = time.time()
     start_cpu = time.process_time()
-    subprocess.run(ffmpeg_cmd, shell=True, check=True,
-                   stdout=subprocess.DEVNULL,
-                   stderr=subprocess.DEVNULL)
+    subprocess.run(ffmpeg_cmd, shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     walltime = time.time() - start_wall
     usertime = time.process_time() - start_cpu
 
@@ -131,9 +131,7 @@ def run_vmaf(idx: int, output_file: str) -> Tuple[Dict[str, float], Dict[str, fl
     ]
 
     for cmd in cmds:
-        subprocess.run(cmd, shell=True, check=True,
-                       stdout=subprocess.DEVNULL,
-                       stderr=subprocess.DEVNULL)
+        subprocess.run(cmd, shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     with open(vmaf_file) as f:
         vmaf_data = json.load(f).get("pooled_metrics", {}).get("vmaf", {})
@@ -201,25 +199,36 @@ def update_csv_with_vmaf(idx: int, vmaf_result: Tuple[Dict[str, float], Dict[str
 with open(input_csv, newline='') as csvfile:
     reader = list(csv.DictReader(csvfile, delimiter=';'))  # support CSV with ;
 
-# Thread pools
-transcode_executor = ThreadPoolExecutor(max_workers=max_transcode_workers)
-vmaf_executor = ThreadPoolExecutor(max_workers=max_vmaf_workers)
+if sequential:
+    # Sequential execution
+    for idx, row in enumerate(reader):
+        idx, row_data = transcode_function(idx, row)
+        write_csv_partial(idx, row_data)
 
-# Submit transcoding jobs
-transcode_futures = [transcode_executor.submit(transcode_function, idx, row)
+        vmaf_result = run_vmaf(idx, row_data["output_file"])
+        update_csv_with_vmaf(idx, vmaf_result)
+else:
+    # Parallel execution
+
+    # Thread pools
+    transcode_executor = ThreadPoolExecutor(max_workers=max_transcode_workers)
+    vmaf_executor = ThreadPoolExecutor(max_workers=max_vmaf_workers)
+
+    # Submit transcoding jobs
+    transcode_futures = [transcode_executor.submit(transcode_function, idx, row)
                      for idx, row in enumerate(reader)]
 
-# Process completed transcodings
-for fut in as_completed(transcode_futures):
-    idx, row_data = fut.result()
-    write_csv_partial(idx, row_data)
+    # Process completed transcodings
+    for fut in as_completed(transcode_futures):
+        idx, row_data = fut.result()
+        write_csv_partial(idx, row_data)
 
-    # Submit VMAF calculation
-    future_vmaf = vmaf_executor.submit(run_vmaf, idx, row_data["output_file"])
-    future_vmaf.add_done_callback(lambda fut, idx=idx: update_csv_with_vmaf(idx, fut.result()))
+        # Submit VMAF calculation
+        future_vmaf = vmaf_executor.submit(run_vmaf, idx, row_data["output_file"])
+        future_vmaf.add_done_callback(lambda fut, idx=idx: update_csv_with_vmaf(idx, fut.result()))
 
-# Wait for all VMAF tasks to finish
-vmaf_executor.shutdown(wait=True)
-transcode_executor.shutdown(wait=True)
+    # Wait for all VMAF tasks to finish
+    vmaf_executor.shutdown(wait=True)
+    transcode_executor.shutdown(wait=True)
 
 print("Pipeline completed successfully.")
