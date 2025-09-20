@@ -1,0 +1,172 @@
+GPU: Quadro P400 | CUDA driver: 12020
+
+=== Codec: H.264/AVC ===
+  - Max B-Frames                           : 4
+  - Supported Rate Control Modes           : CONSTQP, VBR, CBR
+  - Field Encoding                         : Interlaced field: supported
+  - Monochrome Encode                      : Not supported
+  - FMO                                    : Not supported
+  - Quarter-Pel ME                         : Supported
+  - BDirect Mode (H.264)                   : Supported
+  - CABAC (H.264)                          : Supported
+  - Adaptive Transform                     : Supported
+  - Stereo MVC                             : Supported
+  - Max Temporal Layers (or support flag)  : 4
+  - Hierarchical P-Frames                  : Supported
+  - Hierarchical B-Frames                  : Supported
+  - Max Level                              : 6.2 (62)
+  - Min Level                              : 1.0 (10)
+  - Separate Color Plane                   : Supported
+  - Max Width                              : 4096
+  - Max Height                             : 4096
+  - Temporal SVC                           : Supported
+  - Dynamic Resolution Change              : Supported
+  - Dynamic Bitrate Change                 : Supported
+  - Dynamic Force CONSTQP                  : Supported
+  - Dynamic RC Mode Change                 : Not supported
+  - Subframe Readback                      : Supported
+  - Constrained Encoding                   : Supported
+  - Intra Refresh                          : Supported
+  - Custom VBV Buffer Size                 : Supported
+  - Dynamic Slice Mode                     : Supported
+  - Reference Picture Invalidation         : Supported
+  - Pre-Processing (bitmask)               : None (0x0)
+  - Async Encode                           : Not supported
+  - Max Macroblocks per Frame              : 65536
+  - Max Macroblocks per Second             : 983040 MB/s (~251.66 Mpix/s)
+  - YUV444 Encode                          : Supported
+  - Lossless Encode                        : Supported
+  - Sample Adaptive Offset (HEVC)          : Not supported
+  - ME Only Mode                           : Supported for I and P
+  - Lookahead                              : Supported
+  - Temporal AQ                            : Supported
+  - 10-bit Encode                          : Not supported
+  - Max LTR Frames                         : 8
+  - Weighted Prediction                    : Supported
+  - Dynamic Encoder Capacity (%)           : 100%
+  - B-frame as Reference                   : Unknown
+  - Emphasis Level Map                     : Supported
+  - Min Width                              : 33
+  - Min Height                             : 17
+  - Multiple Reference Frames              : Not supported
+  - HEVC Alpha Layer Encode                : Not supported
+  - Number of Encoder Engines              : 1
+  - Single Slice Intra Refresh             : Supported
+  - Disable Encoder State Advance          : Not supported
+  - Reconstructed Frame Output             : Not supported
+  - Output Block Stats                     : Not supported
+  - Output Row Stats                       : Not supported
+
+=== Codec: HEVC/H.265 ===
+  - Max B-Frames                           : 0
+  - Supported Rate Control Modes           : CONSTQP, VBR, CBR
+  - Field Encoding                         : Interlaced: not supported
+  - Monochrome Encode                      : Not supported
+  - FMO                                    : Not supported
+  - Quarter-Pel ME                         : Supported
+  - BDirect Mode (H.264)                   : Not supported
+  - CABAC (H.264)                          : Supported
+  - Adaptive Transform                     : Not supported
+  - Stereo MVC                             : Not supported
+  - Max Temporal Layers (or support flag)  : 0
+  - Hierarchical P-Frames                  : Not supported
+  - Hierarchical B-Frames                  : Not supported
+  - Max Level                              : 6.2 (186)
+  - Min Level                              : 1.0 (30)
+  - Separate Color Plane                   : Not supported
+  - Max Width                              : 8192
+  - Max Height                             : 8192
+  - Temporal SVC                           : Not supported
+  - Dynamic Resolution Change              : Supported
+  - Dynamic Bitrate Change                 : Supported
+  - Dynamic Force CONSTQP                  : Supported
+  - Dynamic RC Mode Change                 : Not supported
+  - Subframe Readback                      : Supported
+  - Constrained Encoding                   : Supported
+  - Intra Refresh                          : Supported
+  - Custom VBV Buffer Size                 : Supported
+  - Dynamic Slice Mode                     : Supported
+  - Reference Picture Invalidation         : Supported
+  - Pre-Processing (bitmask)               : None (0x0)
+  - Async Encode                           : Not supported
+  - Max Macroblocks per Frame              : 262144
+  - Max Macroblocks per Second             : 983040 MB/s (~251.66 Mpix/s)
+  - YUV444 Encode                          : Supported
+  - Lossless Encode                        : Supported
+  - Sample Adaptive Offset (HEVC)          : Supported
+  - ME Only Mode                           : Supported for I and P
+  - Lookahead                              : Supported
+  - Temporal AQ                            : Not supported
+  - 10-bit Encode                          : Supported
+  - Max LTR Frames                         : 7
+  - Weighted Prediction                    : Supported
+  - Dynamic Encoder Capacity (%)           : 100%
+  - B-frame as Reference                   : Not supported
+  - Emphasis Level Map                     : Not supported
+  - Min Width                              : 65
+  - Min Height                             : 33
+  - Multiple Reference Frames              : Not supported
+  - HEVC Alpha Layer Encode                : Not supported
+  - Number of Encoder Engines              : 1
+  - Single Slice Intra Refresh             : Supported
+  - Disable Encoder State Advance          : Not supported
+  - Reconstructed Frame Output             : Not supported
+  - Output Block Stats                     : Not supported
+  - Output Row Stats                       : Not supported
+
+=== Codec: AV1 ===
+  - Max B-Frames                           : 0
+  - Supported Rate Control Modes           : None
+  - Field Encoding                         : Interlaced: not supported
+  - Monochrome Encode                      : Not supported
+  - FMO                                    : Not supported
+  - Quarter-Pel ME                         : Not supported
+  - BDirect Mode (H.264)                   : Not supported
+  - CABAC (H.264)                          : Not supported
+  - Adaptive Transform                     : Not supported
+  - Stereo MVC                             : Not supported
+  - Max Temporal Layers (or support flag)  : 0
+  - Hierarchical P-Frames                  : Not supported
+  - Hierarchical B-Frames                  : Not supported
+  - Max Level                              : 2.0 (0)
+  - Min Level                              : 2.0 (0)
+  - Separate Color Plane                   : Not supported
+  - Max Width                              : 0
+  - Max Height                             : 0
+  - Temporal SVC                           : Not supported
+  - Dynamic Resolution Change              : Not supported
+  - Dynamic Bitrate Change                 : Not supported
+  - Dynamic Force CONSTQP                  : Not supported
+  - Dynamic RC Mode Change                 : Not supported
+  - Subframe Readback                      : Not supported
+  - Constrained Encoding                   : Not supported
+  - Intra Refresh                          : Not supported
+  - Custom VBV Buffer Size                 : Not supported
+  - Dynamic Slice Mode                     : Not supported
+  - Reference Picture Invalidation         : Not supported
+  - Pre-Processing (bitmask)               : None (0x0)
+  - Async Encode                           : Not supported
+  - Max Macroblocks per Frame              : 0
+  - Max Macroblocks per Second             : 0 MB/s (~0.00 Mpix/s)
+  - YUV444 Encode                          : Not supported
+  - Lossless Encode                        : Not supported
+  - Sample Adaptive Offset (HEVC)          : Not supported
+  - ME Only Mode                           : Not supported
+  - Lookahead                              : Not supported
+  - Temporal AQ                            : Not supported
+  - 10-bit Encode                          : Not supported
+  - Max LTR Frames                         : 0
+  - Weighted Prediction                    : Not supported
+  - Dynamic Encoder Capacity (%)           : 0%
+  - B-frame as Reference                   : Not supported
+  - Emphasis Level Map                     : Not supported
+  - Min Width                              : 0
+  - Min Height                             : 0
+  - Multiple Reference Frames              : Not supported
+  - HEVC Alpha Layer Encode                : Not supported
+  - Number of Encoder Engines              : 0
+  - Single Slice Intra Refresh             : Not supported
+  - Disable Encoder State Advance          : Not supported
+  - Reconstructed Frame Output             : Not supported
+  - Output Block Stats                     : Not supported
+  - Output Row Stats                       : Not supported
